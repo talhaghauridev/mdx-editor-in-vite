@@ -183,7 +183,7 @@ const RenderContent: React.FC<Props> = memo(
         const codeContent = content?.[0]?.text || "";
 
         return (
-          <pre key={key} style={combinedStyles.codeBlockStyle}>
+          <pre key={key || language} style={combinedStyles.codeBlockStyle}>
             <code>{removeBackslashes(codeContent)}</code>
           </pre>
         );

@@ -1,7 +1,7 @@
 import {
-  AdmonitionDirectiveDescriptor,
+  KitchenSinkToolbar,
   MDXEditor,
-  UndoRedo,
+  SandpackConfig,
   codeBlockPlugin,
   codeMirrorPlugin,
   diffSourcePlugin,
@@ -18,18 +18,6 @@ import {
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
-  Separator,
-  BlockTypeSelect,
-  BoldItalicUnderlineToggles,
-  CreateLink,
-  DiffSourceToggleWrapper,
-  InsertImage,
-  ListsToggle,
-  KitchenSinkToolbar,
-  ConditionalContents,
-  ChangeCodeMirrorLanguage,
-  InsertSandpack,
-  SandpackConfig,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 
