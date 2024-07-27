@@ -1,14 +1,3 @@
-import React from "react";
-
-const MarkdownRenderer: React.FC<{ markdown: string }> = ({ markdown }) => {
-  const content = parseMarkdownToJson(markdown);
-  console.log(content);
-
-  return <div>{renderContent(content)}</div>;
-};
-
-export default MarkdownRenderer;
-
 type Mark = { type: string; attrs?: Record<string, any> };
 
 interface BaseNode {
@@ -26,94 +15,6 @@ interface Content extends BaseNode {
   attrs?: Record<string, any>;
 }
 
-type MarkdownNode = Content | TextWithMarks;
-function renderTextWithMarks(textNode: TextWithMarks): React.ReactNode {
-  let textElement: React.ReactNode = textNode.text;
-
-  if (textNode.marks) {
-    textNode.marks.forEach((mark, index) => {
-      switch (mark.type) {
-        case "italic":
-          textElement = <em key={index}>{textElement}</em>;
-          break;
-        case "bold":
-          textElement = <strong key={index}>{textElement}</strong>;
-          break;
-        case "link":
-          textElement = (
-            <a
-              key={index}
-              href={mark.attrs?.href}
-              target={mark.attrs?.target}
-              rel={mark.attrs?.rel}
-              className={mark.attrs?.class || undefined}
-            >
-              {textElement}
-            </a>
-          );
-          break;
-        case "code":
-          textElement = <code key={index}>{textElement}</code>;
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
-  return textElement;
-}
-
-function renderContent(content: MarkdownNode[]): React.ReactNode {
-  return content.map((node, index) => {
-    switch (node.type) {
-      case "heading":
-        const level = (node as Content).attrs?.level || 2;
-        return React.createElement(
-          `h${level}`,
-          { key: index },
-          renderContent((node as Content).content as MarkdownNode[])
-        );
-      case "paragraph":
-        return (
-          <p key={index}>
-            {renderContent((node as Content).content as MarkdownNode[])}
-          </p>
-        );
-      case "bulletList":
-        return (
-          <ul key={index}>
-            {renderContent((node as Content).content as MarkdownNode[])}
-          </ul>
-        );
-      case "listItem":
-        return (
-          <li key={index}>
-            {renderContent((node as Content).content as MarkdownNode[])}
-          </li>
-        );
-      case "blockquote":
-        return (
-          <blockquote key={index}>
-            {renderContent((node as Content).content as MarkdownNode[])}
-          </blockquote>
-        );
-      case "codeBlock":
-        const language = (node as Content).attrs?.language || "text";
-        return (
-          <pre key={index}>
-            <code className={`language-${language}`}>
-              {renderContent((node as Content).content as MarkdownNode[])}
-            </code>
-          </pre>
-        );
-      case "text":
-        return renderTextWithMarks(node as TextWithMarks);
-      default:
-        return null;
-    }
-  });
-}
 export function parseMarkdownToJson(markdown: string): Content[] {
   const content: Content[] = [];
   const lines = markdown.split("\n");

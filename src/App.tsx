@@ -17,10 +17,6 @@ const App = () => {
           <MarkdownPreview markdownContent={markdownContent} />
         </div>
       </main>
-      <div
-        className="App"
-        style={{ display: "flex", justifyContent: "center", padding: "50px" }}
-      ></div>
     </>
   );
 };

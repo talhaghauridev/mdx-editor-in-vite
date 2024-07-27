@@ -49,6 +49,20 @@ interface Props {
   styles?: { [key: string]: React.CSSProperties };
 }
 
+// Define possible content nodes
+const NODE_TYPES = {
+  HEADING: "heading",
+  PARAGRAPH: "paragraph",
+  TEXT: "text",
+  ORDERED_LIST: "orderedList",
+  LIST_ITEM: "listItem",
+  THEMATIC_BREAK: "thematicBreak",
+  CODE_BLOCK: "codeBlock",
+  CHECK_LIST: "checkList",
+  BULLET_LIST: "bulletList",
+  IMAGE: "image",
+};
+
 // Default styles
 const defaultStyles: { [key: string]: React.CSSProperties } = {
   codeStyle: {
@@ -72,7 +86,7 @@ const defaultStyles: { [key: string]: React.CSSProperties } = {
 };
 
 // Utility function to remove backslashes
-const removeBackslashes = (text: string) => text.replace(/\\+/g, "");
+const removeBackslashes = (text: string): string => text.replace(/\\+/g, "");
 
 const RenderContent: React.FC<Props> = memo(
   ({ content, components = {}, styles = {} }) => {
@@ -80,7 +94,6 @@ const RenderContent: React.FC<Props> = memo(
       () => ({ ...defaultStyles, ...styles }),
       [styles]
     );
-    console.log({ combinedStyles });
 
     const renderNode = useCallback(
       (node: ContentNode, key: number): React.ReactNode => {
@@ -99,33 +112,32 @@ const RenderContent: React.FC<Props> = memo(
         }
 
         switch (type) {
-          case "heading":
+          case NODE_TYPES.HEADING:
             return React.createElement(
               `h${attrs?.level || 1}`,
               { key },
-              renderContent(nodeContent)
+              renderContent(nodeContent || [])
             );
-          case "paragraph":
-            return <p key={key}>{renderContent(nodeContent)}</p>;
-          case "text":
+          case NODE_TYPES.PARAGRAPH:
+            return <p key={key}>{renderContent(nodeContent || [])}</p>;
+          case NODE_TYPES.TEXT:
             return renderTextNode(node, key);
-          case "orderedList":
-            return <ol key={key}>{renderContent(nodeContent)}</ol>;
-          case "listItem":
+          case NODE_TYPES.ORDERED_LIST:
+          case NODE_TYPES.BULLET_LIST:
+            return renderListNode(node, key, type === NODE_TYPES.ORDERED_LIST);
+          case NODE_TYPES.LIST_ITEM:
             return (
               <li key={key} style={combinedStyles.listItemStyle}>
-                {renderContent(nodeContent)}
+                {renderContent(nodeContent || [])}
               </li>
             );
-          case "thematicBreak":
+          case NODE_TYPES.THEMATIC_BREAK:
             return <hr key={key} />;
-          case "codeBlock":
+          case NODE_TYPES.CODE_BLOCK:
             return renderCodeBlockNode(node, key);
-          case "checkList":
+          case NODE_TYPES.CHECK_LIST:
             return renderCheckListNode(node, key);
-          case "bulletList":
-            return renderBulletListNode(node, key);
-          case "image":
+          case NODE_TYPES.IMAGE:
             return renderImageNode(node, key);
           default:
             return null;
@@ -221,7 +233,7 @@ const RenderContent: React.FC<Props> = memo(
                   readOnly
                   style={combinedStyles.checkBoxStyle}
                 />
-                {renderContent(item.content)}
+                {renderContent(item.content || [])}
               </li>
             ))}
           </ul>
@@ -230,18 +242,20 @@ const RenderContent: React.FC<Props> = memo(
       [combinedStyles, renderContent]
     );
 
-    const renderBulletListNode = useCallback(
-      (node: ContentNode, key: number): React.ReactNode => {
+    // Unified function to render both ordered and unordered lists
+    const renderListNode = useCallback(
+      (node: ContentNode, key: number, isOrdered: boolean): React.ReactNode => {
         const { content } = node;
+        const ListComponent = isOrdered ? "ol" : "ul";
 
         return (
-          <ul key={key}>
+          <ListComponent key={key}>
             {content?.map((item, index) => (
               <li key={index} style={combinedStyles.listItemStyle}>
-                {renderContent(item.content)}
+                {renderContent(item.content || [])}
               </li>
             ))}
-          </ul>
+          </ListComponent>
         );
       },
       [combinedStyles, renderContent]
