@@ -53,7 +53,7 @@ interface Props {
 const defaultStyles: { [key: string]: React.CSSProperties } = {
   codeStyle: {
     background: "#f0f0f3",
-    padding: "8px",
+    padding: "4px",
     borderRadius: "4px",
     fontFamily: "monospace",
   },
@@ -80,6 +80,7 @@ const RenderContent: React.FC<Props> = memo(
       () => ({ ...defaultStyles, ...styles }),
       [styles]
     );
+    console.log({ combinedStyles });
 
     const renderNode = useCallback(
       (node: ContentNode, key: number): React.ReactNode => {
@@ -161,7 +162,15 @@ const RenderContent: React.FC<Props> = memo(
                 );
               case "code":
                 return (
-                  <code style={combinedStyles.codeStyle} key={key}>
+                  <code
+                    style={{
+                      background: "#f0f0f3",
+                      padding: "4px",
+                      borderRadius: "14px",
+                      fontFamily: "monospace",
+                    }}
+                    key={key}
+                  >
                     {acc}
                   </code>
                 );
@@ -245,7 +254,7 @@ const RenderContent: React.FC<Props> = memo(
           <img
             src={src}
             alt={alt || ""}
-            style={{ maxWidth: "100%" }}
+            style={{ maxWidth: "100%", height: "200px", objectFit: "fill" }}
             key={key}
           />
         );

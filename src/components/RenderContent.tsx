@@ -175,17 +175,25 @@ export function parseMarkdownToJson(markdown: string): Content[] {
       } else if (match[10]) {
         segments.push(textWithMarks(match[10], [{ type: "underline" }]));
       } else if (match[12]) {
-        segments.push(
-          textWithMarks(match[12], [
-            {
-              type: "link",
-              attrs: {
-                href: match[13],
-                target: "_blank",
-              },
+        const linkText = match[12];
+        const linkHref = match[13];
+
+        const innerSegments = parseText(linkText); // Parse inner text to get all marks
+
+        innerSegments.forEach((segment) => {
+          if (!segment.marks) {
+            segment.marks = [];
+          }
+          segment.marks.push({
+            type: "link",
+            attrs: {
+              href: linkHref,
+              target: "_blank",
             },
-          ])
-        );
+          });
+        });
+
+        segments.push(...innerSegments);
       } else if (match[15]) {
         segments.push(textWithMarks(match[15], [{ type: "code" }]));
       }
@@ -308,10 +316,11 @@ export function parseMarkdownToJson(markdown: string): Content[] {
       continue;
     }
 
-    if ((match = line.match(/^!\[([^\]]*)\]\(([^)]+)(?:\s*"([^"]*)")?\)/))) {
+    // Updated regex for images to correctly parse src and title
+    if ((match = line.match(/^!\[([^\]]*)\]\(([^"\s]+)(?:\s*"([^"]*)")?\)/))) {
       const altText = match[1];
       const src = match[2];
-      // Optional title handling is omitted as it is not needed in the URL.
+      // Title is parsed but not added to attrs
       content.push(addContent("image", [], { src, alt: altText }));
       continue;
     }

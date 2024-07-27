@@ -4,7 +4,104 @@
   box-sizing: border-box;
 }
 
-.editor-co {
+.mdx-editor {
+  max-width: 800px;
+  width: 780px;
+}
+.mdx-editor ._rootContentEditableWrapper_11eqz_1047 {
+  padding-left: 15px;
+}
+
+.mdx-editor div[role="toolbar"] div[style="display: flex;"] {
+  /* padding-left: 15px; */
   width: 100%;
-  max-width: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#markdown-preview {
+  font-family: system-ui;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+}
+#markdown-preview .preview {
+  background: #f0f0f3;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 500;
+}
+#markdown-preview .preview button {
+  background: white;
+  border: 1px solid #edededed;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#markdown-preview .markdown-p {
+  padding: 12px 10px;
+  display: flex;
+  color: #373d42;
+
+  flex-direction: column;
+  gap: 4px;
+}
+body ._toolbarButtonSelectTrigger_11eqz_280 {
+  display: none;
+}
+
+.android-frame {
+  position: relative;
+  width: 335px;
+  height: 620px;
+  background-color: #000;
+  border-radius: 30px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.screen {
+  width: 96%; /* Slightly smaller than the container to create a bezel */
+  height: 95%;
+  background-color: #fff; /* Background color of the screen */
+  border-radius: 20px; /* Rounded corners for the screen */
+  position: relative;
+  overflow: auto;
+}
+
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* Notch and buttons simulation */
+.android-frame::before {
+  content: "";
+  position: absolute;
+  background-color: #000;
+}
+
+.android-frame::before {
+  top: 5px;
+  left: 50%;
+  width: 60px;
+  height: 10px;
+  border-radius: 5px;
+  transform: translateX(-50%);
+}
+
+.android-frame::after {
+  right: 5px;
+  top: 50%;
+  width: 5px;
+  height: 30px;
+  border-radius: 2px;
+  transform: translateY(-50%);
 }
